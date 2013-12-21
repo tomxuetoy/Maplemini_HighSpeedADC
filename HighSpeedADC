@@ -69,3 +69,46 @@ int main(void) {
     }
     return 0;
 }
+
+//代码运行结果：
+//Starting loops :
+//Stop loops :
+//Elapsed Time : 189 milliseconds(for 100000 analog reads)
+//val =
+//2062
+//PCLK2 =
+//72000000
+//
+//Starting loops :
+//Stop loops :
+//Elapsed Time : 190 milliseconds(for 100000 analog reads)
+//val =
+//2060
+//PCLK2 =
+//72000000
+//
+//
+//如果将GPIO管脚输出打开（消除注释），如下：
+//while (counter++ < limit)
+//{
+//	//digitalWrite(outPin, HIGH);
+//	val = analogRead(3);
+//	//digitalWrite(outPin, LOW);
+//}
+//
+//则运行结果如下：
+//Starting loops :
+//Stop loops :
+//Elapsed Time : 309 milliseconds(for 100000 analog reads)
+//val =
+//2169
+//PCLK2 =
+//72000000
+//
+//Starting loops :
+//Stop loops :
+//Elapsed Time : 309 milliseconds(for 100000 analog reads)
+//val =
+//2133
+//PCLK2 =
+//72000000
