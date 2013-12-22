@@ -101,7 +101,7 @@ int main(void) {
 }
 
 /*
-Running result is below:
+Running result (simplified analogRead+digitalWrite()) is below:
 Starting loops:
 Stop loops:
 Elapsed Time: 112 milliseconds (for 100000 analog reads)
@@ -152,6 +152,32 @@ Elapsed Time: 110 milliseconds (for 100000 analog reads)
  pin =
 4
 
+
+
+
+
+
+
+If we use digitalWrite() in the loop, then the running result is:
+Starting loops:
+Stop loops:
+Elapsed Time: 244 milliseconds (for 100000 analog reads)
+ val =
+2020
+ PCLK2 =
+72000000
+ pin =
+4
+
+Starting loops:
+Stop loops:
+Elapsed Time: 243 milliseconds (for 100000 analog reads)
+ val =
+2050
+ PCLK2 =
+72000000
+ pin =
+4
 
 
 
