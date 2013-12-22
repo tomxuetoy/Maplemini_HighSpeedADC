@@ -39,7 +39,7 @@ void setup()
 
 void loop()
 {
-   	COMM.println("\nStarting loops:");
+    COMM.println("\nStarting loops:");
     counter = 0;
 
     // digitalWrite() preparation work
@@ -48,9 +48,9 @@ void loop()
 
     // analogRead() preparation work
     const adc_dev *dev = PIN_MAP[analogPin].adc_device;
-	adc_reg_map *regs = dev->regs;
-	adc_set_reg_seqlen(dev, 1);
-	regs->SQR3 = PIN_MAP[analogPin].adc_channel;
+    adc_reg_map *regs = dev->regs;
+    adc_set_reg_seqlen(dev, 1);
+    regs->SQR3 = PIN_MAP[analogPin].adc_channel;
     
     start = millis();
     while (counter++ < limit)
