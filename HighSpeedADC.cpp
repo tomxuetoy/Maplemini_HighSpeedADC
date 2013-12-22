@@ -127,66 +127,9 @@ Elapsed Time: 111 milliseconds (for 100000 analog reads)
 
 
 
-Case 2: simplified analogRead() + simplified (and precalculated) digitalWrite()
-If we precalculate the shift operation's result and use it directly, like below:
-gpiodev->regs->BSRR = 0x10;
-gpiodev->regs->BSRR = 0x100000;
-
-then the running result is: (save quite a little time)
-Starting loops:
-Stop loops:
-Elapsed Time: 110 milliseconds (for 100000 analog reads)
- val =
-2117
- PCLK2 =
-72000000
- pin =
-4
-
-Starting loops:
-Stop loops:
-Elapsed Time: 110 milliseconds (for 100000 analog reads)
- val =
-2067
- PCLK2 =
-72000000
- pin =
-4
 
 
-
-
-
-
-Case 3: simplified analogRead() and original digitalWrite()
-If we use digitalWrite() in the loop, then the running result is:
-Starting loops:
-Stop loops:
-Elapsed Time: 244 milliseconds (for 100000 analog reads)
- val =
-2020
- PCLK2 =
-72000000
- pin =
-4
-
-Starting loops:
-Stop loops:
-Elapsed Time: 243 milliseconds (for 100000 analog reads)
- val =
-2050
- PCLK2 =
-72000000
- pin =
-4
-
-
-
-
-
-
-
-Case 4: only simplified analogRead, without GPIO control
+Case 2: only simplified analogRead, without GPIO control
 If we comment out the digitalWrite() code, like below:
 gpiodev->regs->BSRR = (1U << pin);
 gpiodev->regs->BSRR = (1U << pin)<<16;
@@ -217,9 +160,65 @@ Elapsed Time: 98 milliseconds (for 100000 analog reads)
 
 
 
+Case 3: simplified analogRead() + simplified (and precalculated) digitalWrite()
+If we precalculate the shift operation's result and use it directly, like below:
+gpiodev->regs->BSRR = 0x10;
+gpiodev->regs->BSRR = 0x100000;
+
+then the running result is: (save quite a little time)
+Starting loops:
+Stop loops:
+Elapsed Time: 110 milliseconds (for 100000 analog reads)
+ val =
+2117
+ PCLK2 =
+72000000
+ pin =
+4
+
+Starting loops:
+Stop loops:
+Elapsed Time: 110 milliseconds (for 100000 analog reads)
+ val =
+2067
+ PCLK2 =
+72000000
+ pin =
+4
 
 
-If we apply both original analogRead() and digitalWrite(), then the run result is:
+
+
+
+
+Case 4: simplified analogRead() and original digitalWrite()
+If we use digitalWrite() in the loop, then the running result is:
+Starting loops:
+Stop loops:
+Elapsed Time: 244 milliseconds (for 100000 analog reads)
+ val =
+2020
+ PCLK2 =
+72000000
+ pin =
+4
+
+Starting loops:
+Stop loops:
+Elapsed Time: 243 milliseconds (for 100000 analog reads)
+ val =
+2050
+ PCLK2 =
+72000000
+ pin =
+4
+
+
+
+
+
+
+Case 5: If we apply both original analogRead() and digitalWrite(), then the run result is:
 Starting loops:
 Stop loops:
 Elapsed Time: 325 milliseconds (for 100000 analog reads)
@@ -249,6 +248,4 @@ Elapsed Time: 325 milliseconds (for 100000 analog reads)
 72000000
  pin =
 4
-
-
 */
