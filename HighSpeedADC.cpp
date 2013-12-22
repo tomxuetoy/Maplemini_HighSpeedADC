@@ -160,7 +160,35 @@ Elapsed Time: 98 milliseconds (for 100000 analog reads)
 
 
 
-Case 3: simplified analogRead() + simplified (and precalculated) digitalWrite()
+Case 3: only original analogRead, without GPIO control,
+then the running result is below:
+Starting loops:
+Stop loops:
+Elapsed Time: 200 milliseconds (for 100000 analog reads)
+ val =
+1985
+ PCLK2 =
+72000000
+ pin =
+4
+
+Starting loops:
+Stop loops:
+Elapsed Time: 199 milliseconds (for 100000 analog reads)
+ val =
+1990
+ PCLK2 =
+72000000
+ pin =
+4
+
+
+
+
+
+
+
+Case 4: simplified analogRead() + simplified (and precalculated) digitalWrite()
 If we precalculate the shift operation's result and use it directly, like below:
 gpiodev->regs->BSRR = 0x10;
 gpiodev->regs->BSRR = 0x100000;
@@ -191,7 +219,7 @@ Elapsed Time: 110 milliseconds (for 100000 analog reads)
 
 
 
-Case 4: simplified analogRead() and original digitalWrite()
+Case 5: simplified analogRead() and original digitalWrite()
 If we use digitalWrite() in the loop, then the running result is:
 Starting loops:
 Stop loops:
@@ -218,7 +246,7 @@ Elapsed Time: 243 milliseconds (for 100000 analog reads)
 
 
 
-Case 5: If we apply both original analogRead() and digitalWrite(), then the run result is:
+Case 6: If we apply both original analogRead() and digitalWrite(), then the run result is:
 Starting loops:
 Stop loops:
 Elapsed Time: 325 milliseconds (for 100000 analog reads)
