@@ -60,10 +60,10 @@ void loop()
 //      gpiodev->regs->BSRR = 0x10;
 
         /* val = analogRead(analogPin); */
-		regs->CR2 |= ADC_CR2_SWSTART;
-		while (!(regs->SR & ADC_SR_EOC))
+	regs->CR2 |= ADC_CR2_SWSTART;
+	while (!(regs->SR & ADC_SR_EOC))
             ;
-		val = (uint16)(regs->DR & ADC_DR_DATA);
+	val = (uint16)(regs->DR & ADC_DR_DATA);
 
         /* digitalWrite(outPin, HIGH); */
         gpiodev->regs->BSRR = (1U << pin)<<16;
