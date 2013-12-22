@@ -212,4 +212,43 @@ Elapsed Time: 98 milliseconds (for 100000 analog reads)
  pin =
 4
 
+
+
+
+
+
+
+
+If we apply both original analogRead() and digitalWrite(), then the run result is:
+Starting loops:
+Stop loops:
+Elapsed Time: 325 milliseconds (for 100000 analog reads)
+ val =
+2125
+ PCLK2 =
+72000000
+ pin =
+4
+
+Starting loops:
+Stop loops:
+Elapsed Time: 325 milliseconds (for 100000 analog reads)
+ val =
+2037
+ PCLK2 =
+72000000
+ pin =
+4
+
+Starting loops:
+Stop loops:
+Elapsed Time: 325 milliseconds (for 100000 analog reads)
+ val =
+2119
+ PCLK2 =
+72000000
+ pin =
+4
+
+
 */
