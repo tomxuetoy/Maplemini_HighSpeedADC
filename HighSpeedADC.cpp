@@ -1,8 +1,3 @@
-/*
-* The original code is By leaflabs.com forums member "Stephen from NYC" for Analog Read (Pin 0) Speed Test
-* his code link is here: http://forums.leaflabs.com/topic.php?id=154
-* Tom Xue made some big change to test the high speed ADC of Maple mini @ 2013-12-22 17:53:44
-*/
 #include <wirish/wirish.h>
 #include <libmaple/adc.h>
 
@@ -39,7 +34,7 @@ void setup()
 
 void loop()
 {
-    COMM.println("\nStarting loops:");
+   	COMM.println("\nStarting loops:");
     counter = 0;
 
     // digitalWrite() preparation work
@@ -48,29 +43,29 @@ void loop()
 
     // analogRead() preparation work
     const adc_dev *dev = PIN_MAP[analogPin].adc_device;
-    adc_reg_map *regs = dev->regs;
-    adc_set_reg_seqlen(dev, 1);
-    regs->SQR3 = PIN_MAP[analogPin].adc_channel;
+	adc_reg_map *regs = dev->regs;
+	adc_set_reg_seqlen(dev, 1);
+	regs->SQR3 = PIN_MAP[analogPin].adc_channel;
     
-    start = millis();
+    start = micros();
     while (counter++ < limit)
     {
-        /* digitalWrite(outPin, HIGH); */
+//        digitalWrite(outPin, HIGH);
         gpiodev->regs->BSRR = (1U << pin);
 //      gpiodev->regs->BSRR = 0x10;
 
-        /* val = analogRead(analogPin); */
-	regs->CR2 |= ADC_CR2_SWSTART;
-	while (!(regs->SR & ADC_SR_EOC))
+//        val = analogRead(analogPin);
+		regs->CR2 |= ADC_CR2_SWSTART;
+		while (!(regs->SR & ADC_SR_EOC))
             ;
-	val = (uint16)(regs->DR & ADC_DR_DATA);
+		val = (uint16)(regs->DR & ADC_DR_DATA);
 
-        /* digitalWrite(outPin, HIGH); */
+//        digitalWrite(outPin, LOW);
         gpiodev->regs->BSRR = (1U << pin)<<16;
 //      gpiodev->regs->BSRR = 0x100000;
     }
-    stop = millis();
-
+    stop = micros();
+//    COMM.begin();
     COMM.println("Stop loops:");
     COMM.print("Elapsed Time: ");
     COMM.print(stop - start);
@@ -83,6 +78,7 @@ void loop()
     COMM.println(PCLK2);
     COMM.println(" pin = ");
     COMM.println(pin);
+//    COMM.end();
 }
 
 // Force init to be called *first*, i.e. before static object allocation.
@@ -100,180 +96,35 @@ int main(void) {
     return 0;
 }
 
+
 /*
-Case 1: simplified analogRead() and simplified digitalWrite()
-Running result is below:
-Starting loops:
-Stop loops:
-Elapsed Time: 112 milliseconds (for 100000 analog reads)
- val =
-2134
- PCLK2 =
-72000000
- pin =
-4
-
-Starting loops:
-Stop loops:
-Elapsed Time: 111 milliseconds (for 100000 analog reads)
- val =
-2039
- PCLK2 =
-72000000
- pin =
-4
+Case 1: simplified analogRead() + simplified digitalWrite()
+Elapsed Time: 107186 milliseconds (for 100000 analog reads)
+Elapsed Time: 107185 milliseconds (for 100000 analog reads)
 
 
+Case 2: simplified analogRead + without GPIO control
+Elapsed Time: 96064 milliseconds (for 100000 analog reads)
+Elapsed Time: 96065 milliseconds (for 100000 analog reads)
 
 
-
-
-
-Case 2: only simplified analogRead, without GPIO control
-If we comment out the digitalWrite() code, like below:
-gpiodev->regs->BSRR = (1U << pin);
-gpiodev->regs->BSRR = (1U << pin)<<16;
-
-then the running result is:
-Starting loops:
-Stop loops:
-Elapsed Time: 99 milliseconds (for 100000 analog reads)
- val =
-2109
- PCLK2 =
-72000000
- pin =
-4
-
-Starting loops:
-Stop loops:
-Elapsed Time: 98 milliseconds (for 100000 analog reads)
- val =
-2161
- PCLK2 =
-72000000
- pin =
-4
-
-
-
-
-
-
-Case 3: only original analogRead, without GPIO control,
-then the running result is below:
-Starting loops:
-Stop loops:
-Elapsed Time: 200 milliseconds (for 100000 analog reads)
- val =
-1985
- PCLK2 =
-72000000
- pin =
-4
-
-Starting loops:
-Stop loops:
-Elapsed Time: 199 milliseconds (for 100000 analog reads)
- val =
-1990
- PCLK2 =
-72000000
- pin =
-4
-
-
-
-
-
+Case 3: original analogRead + without GPIO control,
+Elapsed Time: 199089 milliseconds (for 100000 analog reads)
+Elapsed Time: 199085 milliseconds (for 100000 analog reads)
 
 
 Case 4: simplified analogRead() + simplified (and precalculated) digitalWrite()
-If we precalculate the shift operation's result and use it directly, like below:
-gpiodev->regs->BSRR = 0x10;
-gpiodev->regs->BSRR = 0x100000;
-
-then the running result is: (save quite a little time)
-Starting loops:
-Stop loops:
-Elapsed Time: 110 milliseconds (for 100000 analog reads)
- val =
-2117
- PCLK2 =
-72000000
- pin =
-4
-
-Starting loops:
-Stop loops:
-Elapsed Time: 110 milliseconds (for 100000 analog reads)
- val =
-2067
- PCLK2 =
-72000000
- pin =
-4
+Elapsed Time: 108584 milliseconds (for 100000 analog reads)
+Elapsed Time: 108583 milliseconds (for 100000 analog reads)
 
 
+Case 5: simplified analogRead() + original digitalWrite()
+Elapsed Time: 243624 milliseconds (for 100000 analog reads)
+Elapsed Time: 243621 milliseconds (for 100000 analog reads)
 
 
+Case 6: original analogRead() + original digitalWrite()
+Elapsed Time: 324387 milliseconds (for 100000 analog reads)
+Elapsed Time: 324394 milliseconds (for 100000 analog reads)
 
-
-Case 5: simplified analogRead() and original digitalWrite()
-If we use digitalWrite() in the loop, then the running result is:
-Starting loops:
-Stop loops:
-Elapsed Time: 244 milliseconds (for 100000 analog reads)
- val =
-2020
- PCLK2 =
-72000000
- pin =
-4
-
-Starting loops:
-Stop loops:
-Elapsed Time: 243 milliseconds (for 100000 analog reads)
- val =
-2050
- PCLK2 =
-72000000
- pin =
-4
-
-
-
-
-
-
-Case 6: If we apply both original analogRead() and digitalWrite(), then the run result is:
-Starting loops:
-Stop loops:
-Elapsed Time: 325 milliseconds (for 100000 analog reads)
- val =
-2125
- PCLK2 =
-72000000
- pin =
-4
-
-Starting loops:
-Stop loops:
-Elapsed Time: 325 milliseconds (for 100000 analog reads)
- val =
-2037
- PCLK2 =
-72000000
- pin =
-4
-
-Starting loops:
-Stop loops:
-Elapsed Time: 325 milliseconds (for 100000 analog reads)
- val =
-2119
- PCLK2 =
-72000000
- pin =
-4
 */
