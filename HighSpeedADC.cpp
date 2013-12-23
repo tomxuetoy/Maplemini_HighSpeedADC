@@ -69,7 +69,7 @@ void loop()
     COMM.println("Stop loops:");
     COMM.print("Elapsed Time: ");
     COMM.print(stop - start);
-    COMM.print(" milliseconds (for ");
+    COMM.print(" us (for ");
     COMM.print(limit);
     COMM.println(" analog reads)");
     COMM.println(" val = ");
@@ -99,32 +99,32 @@ int main(void) {
 
 /*
 Case 1: simplified analogRead() + simplified digitalWrite()
-Elapsed Time: 107186 milliseconds (for 100000 analog reads)
-Elapsed Time: 107185 milliseconds (for 100000 analog reads)
+Elapsed Time: 107186 us (for 100000 analog reads)
+Elapsed Time: 107185 us (for 100000 analog reads)
 
 
 Case 2: simplified analogRead + without GPIO control
-Elapsed Time: 96064 milliseconds (for 100000 analog reads)
-Elapsed Time: 96065 milliseconds (for 100000 analog reads)
+Elapsed Time: 96064 us (for 100000 analog reads)
+Elapsed Time: 96065 us (for 100000 analog reads)
 
 
 Case 3: original analogRead + without GPIO control,
-Elapsed Time: 199089 milliseconds (for 100000 analog reads)
-Elapsed Time: 199085 milliseconds (for 100000 analog reads)
+Elapsed Time: 199089 us (for 100000 analog reads)
+Elapsed Time: 199085 us (for 100000 analog reads)
 
 
 Case 4: simplified analogRead() + simplified (and precalculated) digitalWrite()
-Elapsed Time: 108584 milliseconds (for 100000 analog reads)
-Elapsed Time: 108583 milliseconds (for 100000 analog reads)
+Elapsed Time: 108584 us (for 100000 analog reads)
+Elapsed Time: 108583 us (for 100000 analog reads)
 
 
 Case 5: simplified analogRead() + original digitalWrite()
-Elapsed Time: 243624 milliseconds (for 100000 analog reads)
-Elapsed Time: 243621 milliseconds (for 100000 analog reads)
+Elapsed Time: 243624 us (for 100000 analog reads)
+Elapsed Time: 243621 us (for 100000 analog reads)
 
 
 Case 6: original analogRead() + original digitalWrite()
-Elapsed Time: 324387 milliseconds (for 100000 analog reads)
-Elapsed Time: 324394 milliseconds (for 100000 analog reads)
+Elapsed Time: 324387 us (for 100000 analog reads)
+Elapsed Time: 324394 us (for 100000 analog reads)
 
 */
