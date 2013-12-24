@@ -19,8 +19,8 @@ uint32 pixelVal_y[129];
 int SI_x = 20;
 int SI_y = 18;
 int CLK = 19;
-int AO_x = 3;
-int AO_y = 4;
+int AO_x = 3;   // channel 8
+int AO_y = 4;   // channel 7
 
 // GPIO
 gpio_dev *CLK_dev;
@@ -33,9 +33,9 @@ uint8 SI_y_pin;
 uint32 adc_sequence = 0; //Temporary
 uint8 adc_length = 1; //The number of channels to be converted per ADC channel
 uint8 ADC1_Sequence[] = { /*The ADC1 channels sequence, left to right*/
-  8 }; /* Set the sequence 1-6 for SQR3 (left will be first). Must top up to all 6 channels with zeros */
+  8 }; /* channel 8 - pin 4. Set the sequence 1-6 for SQR3 (left will be first). Must top up to all 6 channels with zeros */
 uint8 ADC2_Sequence[] = { /*The ADC2 channels sequence, left to right*/
-  7 };
+  7 };  /* channel 7 - pin 3 */
 
 /*
 * calc_adc_sequence(ADCx_Sequence) converts the SQR3 6 channels' (each ADC1 and ADC2) list into
@@ -211,30 +211,3 @@ int main(void) {
   }
   return 0;
 }
-
-//Starting loops :
-//Stop loops :
-//Elapsed Time : 30545 us(for 25800 analog reads)
-//1.18 us(for 1 sample) 305.45 us(for 1 sensor)  pixelVal_x =
-//153
-//141  142  141  139  142  143  140  142  141  141  141  141  142  145  143  143                                                                                                                              142  143  142  145
-//142  143  134  134  143  145  144  143  143  143  147  143  143  143  143  143                                                                                                                              143  143  143  143
-//143  143  142  143  143  143  142  143  146  146  143  143  145  145  143  143                                                                                                                              146  143  147  145
-//145  147  149  158  143  146  146  146  142  147  142  147  142  145  145  149                                                                                                                              145  145  141  148
-//143  146  143  146  145  148  145  138  143  145  145  148  145  147  150  148                                                                                                                              143  151  146  147
-//143  146  143  149  143  147  146  147  144  148  142  149  143  147  143  146                                                                                                                              144  146  142  146
-//143  147  143  147  143  147  148
-//pixelVal_y =
-//0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0
-//PCLK2 = 72000000
-//
-//ADC1->regs->CR1 = 393216
-//
-//ADC2->regs->CR1 = 0
