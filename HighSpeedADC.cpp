@@ -88,6 +88,16 @@ void setup()
   ADC1->regs->SQR3 |= calc_adc_sequence(ADC1_Sequence);
   ADC2->regs->SQR3 |= calc_adc_sequence(ADC2_Sequence);  
 
+  // right alligned
+  ADC1->regs->CR2 &= (0xfffff7ff);
+  ADC2->regs->CR2 &= (0xfffff7ff);
+
+  // DMA bit set, the key!!! I was stucked here for several days.
+  // RM0008 page 219: Note: In dual ADC mode, to read the slave converted data on the master data register, the DMA 
+  // bit must be enabled even if it is not used to transfer converted regular channel data.
+  ADC1->regs->CR2 |= (1<<8);
+  ADC2->regs->CR2 |= (1<<8);
+
   ADC1->regs->CR1 |= (6 << 16);       // 0b0110: Regular simultaneous mode only
 //  ADC2->regs->CR1 |= (6 << 16);     // For CR1 dual mode, These bits are reserved in ADC2 and ADC3.
 
@@ -120,8 +130,8 @@ void sampleSensor()
   while (!(ADC1->regs->SR & ADC_SR_EOC))
     ;
 //  pixelVal_x[pixelIndex] = (uint16)(ADC1->regs->DR & ADC_DR_DATA);
-  pixelVal_x[pixelIndex] = (uint32)(ADC1->regs->DR);
-  pixelVal_y[pixelIndex] = ((uint32)(ADC1->regs->DR & ADC_DR_ADC2DATA));
+  pixelVal_x[pixelIndex] = (uint16)(ADC1->regs->DR);
+  pixelVal_y[pixelIndex] = ((uint32)(ADC1->regs->DR & ADC_DR_ADC2DATA))>>16;
 
   SI_x_dev->regs->BSRR = (1U << SI_x_pin)<<16;  // SI x set low
   SI_y_dev->regs->BSRR = (1U << SI_y_pin)<<16;  // SI y set low
@@ -138,9 +148,9 @@ void sampleSensor()
     ADC1->regs->CR2 |= ADC_CR2_SWSTART | ADC_CR2_CONT_BIT;
     while (!(ADC1->regs->SR & ADC_SR_EOC))
       ;
-    pixelVal_x[pixelIndex] = (uint32)(ADC1->regs->DR);
+    pixelVal_x[pixelIndex] = (uint16)(ADC1->regs->DR);
 //    pixelVal_x[pixelIndex] = (uint16)(ADC1->regs->DR & ADC_DR_DATA);
-    pixelVal_y[pixelIndex] = ((uint32)(ADC1->regs->DR & ADC_DR_ADC2DATA));
+    pixelVal_y[pixelIndex] = ((uint32)(ADC1->regs->DR & ADC_DR_ADC2DATA))>>16;
     // the last one: pixelIndex = 128
 
     // digitalWrite(CLK, LOW);
@@ -168,7 +178,7 @@ void loop()
   COM.println(" analog reads)");
   COM.print((stop-start)/(double)(sampleCount*129*2));
   COM.print(" us (for 1 sample) ");
-  COM.print((stop-start)/(double)(sampleCount));
+  COM.print((stop-start)/(double)(sampleCount*2));
   COM.print(" us (for 1 sensor) ");
 
   COM.println(" pixelVal_x = ");
@@ -212,29 +222,29 @@ int main(void) {
   return 0;
 }
 
-//Starting loops :
-//Stop loops :
-//Elapsed Time : 30545 us(for 25800 analog reads)
-//1.18 us(for 1 sample) 305.45 us(for 1 sensor)  pixelVal_x =
-//153
-//141  142  141  139  142  143  140  142  141  141  141  141  142  145  143  143                                                                                                                              142  143  142  145
-//142  143  134  134  143  145  144  143  143  143  147  143  143  143  143  143                                                                                                                              143  143  143  143
-//143  143  142  143  143  143  142  143  146  146  143  143  145  145  143  143                                                                                                                              146  143  147  145
-//145  147  149  158  143  146  146  146  142  147  142  147  142  145  145  149                                                                                                                              145  145  141  148
-//143  146  143  146  145  148  145  138  143  145  145  148  145  147  150  148                                                                                                                              143  151  146  147
-//143  146  143  149  143  147  146  147  144  148  142  149  143  147  143  146                                                                                                                              144  146  142  146
-//143  147  143  147  143  147  148
-//pixelVal_y =
-//0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-//0  0  0  0  0  0  0
-//PCLK2 = 72000000
-//
-//ADC1->regs->CR1 = 393216
-//
-//ADC2->regs->CR1 = 0
+//Starting loops:
+//Stop loops:
+//Elapsed Time: 30897 us (for 25800 analog reads)
+//1.20 us (for 1 sample) 154.49 us (for 1 sensor)  pixelVal_x =
+//619
+//604  610  601  612  597  603  599  607  599  605  598  610  609  601  600  614  604  601  605  603
+//599  605  603  593  601  608  603  609  614  611  611  602  610  611  600  611  605  609  606  606
+//605  606  609  607  608  598  596  610  610  605  598  607  602  608  607  607  606  603  607  599
+//601  605  607  614  596  608  593  614  602  615  602  600  595  610  606  612  591  602  603  611
+//607  609  603  611  603  612  598  595  591  613  600  625  598  615  612  620  607  615  610  617
+//604  610  600  615  604  615  604  616  599  617  595  615  604  612  606  612  601  610  598  609
+//596  608  599  604  600  602  608
+//                                    pixelVal_y =
+//616
+//605  599  590  609  602  597  600  611  596  602  595  612  602  602  603  608  602  601  591  617
+//600  595  593  596  611  614  618  613  595  620  614  609  593  604  600  610  597  610  600  604
+//619  621  565  543  558  597  614  614  606  612  603  613  605  613  607  614  610  614  607  615
+//611  615  604  622  614  590  586  602  617  634  591  608  608  610  599  603  604  614  604  603
+//607  619  614  615  606  616  619  621  634  632  612  613  603  606  613  621  622  626  627  622
+//624  638  631  638  646  639  636  634  628  610  586  593  624  614  605  617  607  611  616  617
+//617  625  584  566  564  606  639
+//                                    PCLK2 = 72000000
+
+// ADC1->regs->CR1 = 393216
+
+// ADC2->regs->CR1 = 0
